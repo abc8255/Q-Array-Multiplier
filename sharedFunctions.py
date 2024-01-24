@@ -17,6 +17,23 @@ def initializeQReg(qc, reg, num):
             qc.x(reg[len(num) - i - 1])
 
 
+def CCP(qc, theta, A, B, T):
+    """
+    Multiple controlled phase shift
+    :param qc: Quantum Circuit
+    :param theta: phase shift amount
+    :param A: Control 1
+    :param B: Control 2
+    :param T: Target
+    :return:
+    """
+    qc.cp(theta, B, T)
+    qc.cx(A, B)
+    qc.cp(-theta, B, T)
+    qc.cx(A, B)
+    qc.cp(theta, A, T)
+
+
 def QFT(qc, reg):
     """
     Computes the quantum Fourier transform of reg, one qubit at

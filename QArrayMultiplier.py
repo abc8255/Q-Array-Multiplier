@@ -1,23 +1,6 @@
 from qiskit import QuantumRegister, QuantumCircuit, ClassicalRegister
 import numpy as np
-from sharedFunctions import runNoisy, runIdeal, QFT, invQFT, initializeQReg
-
-
-def CCP(qc, theta, A, B, T):
-    """
-    Multiple controlled phase shift
-    :param qc: Quantum Circuit
-    :param theta: phase shift amount
-    :param A: Control 1
-    :param B: Control 2
-    :param T: Target
-    :return:
-    """
-    qc.cp(theta, B, T)
-    qc.cx(A, B)
-    qc.cp(-theta, B, T)
-    qc.cx(A, B)
-    qc.cp(theta, A, T)
+from sharedFunctions import runNoisy, runIdeal, QFT, invQFT, initializeQReg, CCP
 
 
 def addMultRow(qc, reg_a, s, reg_b, reg_p):
