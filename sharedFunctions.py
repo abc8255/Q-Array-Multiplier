@@ -1,7 +1,6 @@
 from qiskit_aer import AerSimulator
-from qiskit.providers.fake_provider import FakeManilaV2
+from qiskit_ibm_runtime.fake_provider import FakeManilaV2
 from math import pi
-
 
 # ----------------------Circuit Components---------------------------
 def initializeQReg(qc, reg, num):
