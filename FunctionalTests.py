@@ -114,7 +114,7 @@ def AQAMTest(maxNum):
     num = ""
     for i in range(1, maxNum+1):
         num = num + "1"
-        limit = ceil(log2(i) + 2)
+        limit = ceil(log2(i*2) + 2)
         print("Creating a square AQAM Circuit of size ", num)
         qc = AQAM.createAQAMCircuit(num, num, limit)
         print("depth :", qc.decompose().decompose().decompose().depth())
@@ -127,7 +127,7 @@ def AQAMTest(maxNum):
     # Testing Identity case
     for i in range(1, maxNum+1):
         num = num + "1"
-        limit = ceil(log2(i) + 2)
+        limit = ceil(log2(i+1) + 2)
         print("Creating an identity AQAM Circuit of size ", num)
         qc = AQAM.createAQAMCircuit(num, "1", limit)
         print("depth :", qc.decompose().decompose().decompose().depth())
@@ -139,10 +139,10 @@ def AQAMTest(maxNum):
 
 
 def main():
-    numToTest = 3
-    OPBTest(numToTest)
-    IOPBTest(numToTest)
-    QAMTest(numToTest)
+    numToTest = 4
+    # OPBTest(numToTest)
+    # IOPBTest(numToTest)
+    # QAMTest(numToTest)
     AQAMTest(numToTest)
 
 

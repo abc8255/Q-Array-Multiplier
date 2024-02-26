@@ -1,5 +1,7 @@
 from qiskit_aer import AerSimulator
 from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+from qiskit.providers.fake_provider import GenericBackendV2
+from qiskit import transpile
 from math import pi
 
 # ----------------------Circuit Components---------------------------
@@ -100,11 +102,13 @@ def runNoisy(qc):
     :param qc: The pre-created quantum circuit to be run
     :return: The results of the simulation
     """
-    backend = FakeManilaV2()
-    aersim_backend = AerSimulator.from_backend(backend)
+    backend = GenericBackendV2(num_qubits=qc.num_qubits)
+    # aersim_backend = AerSimulator.from_backend(backend)
 
     # Perform noisy simulation
-    result_noise = aersim_backend.run(qc).result()
+    transpiled_circuit = transpile(qc, backend)
+    # result_noise = aersim_backend.run(qc).result()
+    result_noise = backend.run(transpiled_circuit).result()
     counts_noise = result_noise.get_counts(0)
 
     print('Counts(noise):', counts_noise)

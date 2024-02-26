@@ -1,4 +1,4 @@
-from qiskit import QuantumRegister, QuantumCircuit, ClassicalRegister
+from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 import numpy as np
 from sharedFunctions import runNoisy, runIdeal, QFT, invQFT, initializeQReg, CCP
 
@@ -116,8 +116,9 @@ def main():
     # Test a sample input (3x3)
     qc = createQAMCircuit("11", "11")
 
-    runIdeal(qc)
-    runNoisy(qc)
+    qc.draw(output="mpl", style="iqp", filename="test1.png")
+    # runIdeal(qc)
+    # runNoisy(qc)
 
 
 if __name__ == "__main__":
