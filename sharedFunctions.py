@@ -1,5 +1,4 @@
 from qiskit_aer import AerSimulator
-from qiskit_ibm_runtime.fake_provider import FakeManilaV2
 from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit import transpile
 from math import pi
@@ -86,8 +85,9 @@ def runIdeal(qc):
     :param qc: The pre-created quantum circuit to be run
     :return: The results of the simulation
     """
-    # Construct an ideal simulator
+    # Construct an ideal simulator (Use GPU line if Aer is installed with GPU support)
     aersim = AerSimulator()
+    #aersim = AerSimulator(device="GPU")
     # Perform an ideal simulation
     result_ideal = aersim.run(qc).result()
     counts_ideal = result_ideal.get_counts(0)
@@ -102,13 +102,13 @@ def runNoisy(qc):
     :param qc: The pre-created quantum circuit to be run
     :return: The results of the simulation
     """
+    #Creating a generic backend for the current number of qubits being simulated
     backend = GenericBackendV2(num_qubits=qc.num_qubits)
-    # aersim_backend = AerSimulator.from_backend(backend)
 
-    # Perform noisy simulation
+    # Perform noisy simulation (Use GPU line if Aer is installed with GPU support) (blocking_qubits=??)
     transpiled_circuit = transpile(qc, backend)
-    # result_noise = aersim_backend.run(qc).result()
     result_noise = backend.run(transpiled_circuit).result()
+    # result_noise = backend.run(transpiled_circuit, device="GPU", blocking_enable=True).result()
     counts_noise = result_noise.get_counts(0)
 
     print('Counts(noise):', counts_noise)

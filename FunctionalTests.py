@@ -135,14 +135,14 @@ def AQAMTest(maxNum):
         runNoisy(qc)
         del qc
         print("---------", num)
-    print("______________END_OF_AQAM_______________", num)
+    print("______________END_OF_AQAM_______________")
 
 
 def main():
     numToTest = 4
-    # OPBTest(numToTest)
-    # IOPBTest(numToTest)
-    # QAMTest(numToTest)
+    OPBTest(numToTest)
+    IOPBTest(numToTest)
+    QAMTest(numToTest)
     AQAMTest(numToTest)
 
 
