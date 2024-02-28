@@ -3,6 +3,7 @@ from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit import transpile
 from math import pi
 
+
 # ----------------------Circuit Components---------------------------
 def initializeQReg(qc, reg, num):
     """
@@ -79,7 +80,7 @@ def evolveQFTState(qc, reg_a, reg_b, n, factor):
 
 
 # ----------------------Simulator Code---------------------------
-def runIdeal(qc):
+def runIdeal(qc, answer, bits):
     """
     Runs the provided circuit with 1024 shots without noise
     :param qc: The pre-created quantum circuit to be run
@@ -92,11 +93,16 @@ def runIdeal(qc):
     result_ideal = aersim.run(qc).result()
     counts_ideal = result_ideal.get_counts(0)
     print('Counts(ideal):', counts_ideal)
+    key = bin(answer).lstrip('0b').zfill(bits)
+    if key in counts_ideal:
+        print(key, ": ", counts_ideal[key])
+    else:
+        print("key, ", key, ", not present in results")
 
     return result_ideal
 
 
-def runNoisy(qc):
+def runNoisy(qc, answer, bits):
     """
     Runs the provided circuit with 1024 shots with noise
     :param qc: The pre-created quantum circuit to be run
@@ -112,4 +118,9 @@ def runNoisy(qc):
     counts_noise = result_noise.get_counts(0)
 
     print('Counts(noise):', counts_noise)
+    key = bin(answer).lstrip('0b').zfill(bits)
+    if key in counts_noise:
+        print(key, ": ", counts_noise[key])
+    else:
+        print("key, ", key, ", not present in results")
     return result_noise

@@ -147,13 +147,14 @@ def getDepths():
                  }
     print("____________________________________")
     for num in testArray:
-        limit = ceil(log2(len(testArray[num])) + 2)
+        squareLimit = ceil(log2(len(testArray[num])*2) + 2)
+        identityLimit = ceil(log2(len(testArray[num]) + 1) + 2)
         print("Depth for an input of size {}".format(num))
-        print("Limit for this input size {}".format(limit))
-        depth = identityAQAMMultDepth(testArray[num], limit)
+        print("Limit for this input size {}".format(squareLimit))
+        depth = identityAQAMMultDepth(testArray[num], squareLimit)
         print("identity depth: {}".format(depth))
         print("_____________")
-        depth = squareAQAMMultDepth(testArray[num], limit)
+        depth = squareAQAMMultDepth(testArray[num], identityLimit)
         print("square depth: {}".format(depth))
         print("____________________________________")
 
