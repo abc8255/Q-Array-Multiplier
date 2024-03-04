@@ -90,11 +90,12 @@ def QFMTest(maxNum):
     num = ""
     for i in range(maxNum):
         num = num + "1"
+        value = int(num, 2)
         print("Creating a square QAM Circuit of size ", num)
         qc = QFM.createQFMCircuit(num, num)
         print("depth :", qc.decompose().decompose().decompose().depth())
-        runIdeal(qc)
-        runNoisy(qc)
+        runIdeal(qc.decompose().decompose().decompose().decompose(), value, len(num) + 1)
+        runNoisy(qc.decompose().decompose().decompose().decompose(), value, len(num) + 1)
         del qc
         print("---------", i+1)
     num = ""
@@ -183,11 +184,12 @@ def AQAMTest(maxNum):
 
 
 def main():
-    numToTest = 8
+    numToTest = 1
     # OPBTest(numToTest)
     # IOPBTest(numToTest)
-    QAMTest(numToTest)
-    AQAMTest(numToTest)
+    QFMTest(numToTest)
+    # QAMTest(numToTest)
+    # AQAMTest(numToTest)
 
 
 if __name__ == "__main__":
