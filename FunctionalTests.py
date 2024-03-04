@@ -4,6 +4,7 @@ import approxQArrayMultiplier as AQAM
 import ImpRepAddition as IOPB
 import QArrayMultiplier as QAM
 import RepeatedAddition as OPB
+import QArrayMultiplier as QFM
 from sharedFunctions import runIdeal, runNoisy
 from math import ceil, log2
 
@@ -24,7 +25,7 @@ def OPBTest(maxNum):
         runIdeal(qc)
         runNoisy(qc)
         del qc
-        print("---------", num)
+        print("---------", i+1)
     num = ""
     print("-----------------------", num)
     # Testing Identity case
@@ -36,7 +37,7 @@ def OPBTest(maxNum):
         runIdeal(qc)
         runNoisy(qc)
         del qc
-        print("---------", num)
+        print("---------", i+1)
     print("______________END_OF_OPB_______________", num)
 
 
@@ -56,7 +57,7 @@ def IOPBTest(maxNum):
         runIdeal(qc)
         runNoisy(qc)
         del qc
-        print("---------", num)
+        print("---------", i+1)
     num = ""
     print("-----------------------", num)
     # Testing Identity case
@@ -68,8 +69,40 @@ def IOPBTest(maxNum):
         runIdeal(qc)
         runNoisy(qc)
         del qc
-        print("---------", num)
+        print("---------", i+1)
     print("______________END_OF_IOPB_______________", num)
+
+
+def QFMTest(maxNum):
+    """
+    TODO
+
+    :param maxNum: The highest size input to run the test up to
+    """
+    # Testing Square case
+    num = ""
+    for i in range(maxNum):
+        num = num + "1"
+        print("Creating a square QAM Circuit of size ", num)
+        qc = QFM.createQFMCircuit(num, num)
+        print("depth :", qc.decompose().decompose().decompose().depth())
+        runIdeal(qc)
+        runNoisy(qc)
+        del qc
+        print("---------", i+1)
+    num = ""
+    print("-----------------------", num)
+    # Testing Identity case (This function does not support different input sizes)
+    # for i in range(maxNum):
+    #     num = num + "1"
+    #     print("Creating an identity QAM Circuit of size ", num)
+    #     qc = QAM.createQAMCircuit(num, "1")
+    #     print("depth :", qc.decompose().decompose().decompose().depth())
+    #     runIdeal(qc)
+    #     runNoisy(qc)
+    #     del qc
+    #     print("---------", i+1)
+    print("______________END_OF_QAM_______________")
 
 
 def QAMTest(maxNum):
@@ -88,7 +121,7 @@ def QAMTest(maxNum):
         runIdeal(qc)
         runNoisy(qc)
         del qc
-        print("---------", num)
+        print("---------", i+1)
     num = ""
     print("-----------------------", num)
     # Testing Identity case
@@ -100,7 +133,7 @@ def QAMTest(maxNum):
         runIdeal(qc)
         runNoisy(qc)
         del qc
-        print("---------", num)
+        print("---------", i+1)
     print("______________END_OF_QAM_______________")
 
 
@@ -121,7 +154,7 @@ def AQAMTest(maxNum):
         runIdeal(qc)
         runNoisy(qc)
         del qc
-        print("---------", num)
+        print("---------", i)
     num = ""
     print("-----------------------", num)
     # Testing Identity case
@@ -134,7 +167,7 @@ def AQAMTest(maxNum):
         runIdeal(qc)
         runNoisy(qc)
         del qc
-        print("---------", num)
+        print("---------", i)
     print("______________END_OF_AQAM_______________")
 
 
