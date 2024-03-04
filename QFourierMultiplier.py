@@ -30,7 +30,7 @@ def createQFMCircuit(multiplier, multiplicand, readable=False):
         if readable: qc.barrier(label="Initialized + Start QFM")
 
         QFM = qiskit.circuit.library.RGQFTMultiplier(len1, len1+len2, "QFM")
-        qc.append(QFM, [qrMultiplicand[0], qrMultiplicand[1], qrMultiplier[0], qrMultiplier[1], qProduct[0], qProduct[1], qProduct[2], qProduct[3]])
+        qc.append(QFM, qc.qubits)
 
         # # Compute the Fourier transform of accumulator
         # QFT(qc, qProduct)
@@ -102,7 +102,7 @@ def main():
     qc = createQFMCircuit("11", "11")
 
     qc.draw(output="mpl", style="iqp", filename="test1.png")
-    runIdeal(qc.decompose().decompose().decompose().decompose())
+    runIdeal(qc.decompose().decompose().decompose().decompose(), 0b1001, 4)
     # runNoisy(qc)
 
 

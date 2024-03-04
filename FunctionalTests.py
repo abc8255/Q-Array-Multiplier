@@ -4,7 +4,7 @@ import approxQArrayMultiplier as AQAM
 import ImpRepAddition as IOPB
 import QArrayMultiplier as QAM
 import RepeatedAddition as OPB
-import QArrayMultiplier as QFM
+import QFourierMultiplier as QFM
 from sharedFunctions import runIdeal, runNoisy
 from math import ceil, log2
 
