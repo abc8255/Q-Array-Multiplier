@@ -109,9 +109,11 @@ def QFMTest(maxNum, timesToTest):
         print("Creating a square QFM Circuit of size ", num)
         qc = QFM.createQFMCircuit(num, num)
         print("depth :", qc.decompose().decompose().decompose().depth())
-        # This one isn't 100% accurate when ideal so still run
-        for i in range(timesToTest):
-            runIdeal(qc.decompose().decompose().decompose().decompose(), value, len(num)*2)
+        # Commented out Ideal code because all circuits work in an ideal system
+        # print("-------Ideal-------")
+        # for i in range(timesToTest):
+        #     runIdeal(qc.decompose().decompose().decompose().decompose(), value, len(num)*2)
+        # print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc.decompose().decompose().decompose().decompose(), value, len(num)*2)
         del qc
@@ -176,9 +178,11 @@ def AQAMTest(maxNum, timesToTest):
         print("Creating a square AQAM Circuit of size ", num)
         qc = AQAM.createAQAMCircuit(num, num, limit)
         print("depth :", qc.decompose().decompose().decompose().depth())
-        # Commented out Ideal code because all circuits work in an ideal system
-        # for i in range(timesToTest):
-        #     runIdeal(qc, value, len(num) * 2)
+        # This one isn't 100% accurate when ideal so still run
+        print("-------Ideal-------")
+        for i in range(timesToTest):
+            runIdeal(qc, value, len(num) * 2)
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) * 2)
         del qc
@@ -193,9 +197,11 @@ def AQAMTest(maxNum, timesToTest):
         print("Creating an identity AQAM Circuit of size ", num)
         qc = AQAM.createAQAMCircuit(num, "1", limit)
         print("depth :", qc.decompose().decompose().decompose().depth())
-        # Commented out Ideal code because all circuits work in an ideal system
-        # for i in range(timesToTest):
-        #     runIdeal(qc, value, len(num)+1)
+        # This one isn't 100% accurate when ideal so still run
+        print("-------Ideal-------")
+        for i in range(timesToTest):
+            runIdeal(qc, value, len(num)+1)
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num)+1)
         del qc
@@ -204,8 +210,8 @@ def AQAMTest(maxNum, timesToTest):
 
 
 def main():
-    numToTest = 6                   # max number of bits to run the simulation to
-    timesToTest = 20                # number of times to repeat each test
+    numToTest = 8                  # max number of bits to run the simulation to
+    timesToTest = 20                 # number of times to repeat each test
     # OPBTest(numToTest, timesToTest)
     # IOPBTest(numToTest, timesToTest)
     QFMTest(numToTest, timesToTest)
