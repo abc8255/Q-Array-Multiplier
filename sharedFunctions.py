@@ -80,10 +80,13 @@ def evolveQFTState(qc, reg_a, reg_b, n, factor):
 
 
 # ----------------------Simulator Code---------------------------
-def runIdeal(qc, answer, bits):
+def runIdeal(qc, answer, bits, printAll=False):
     """
     Runs the provided circuit with 1024 shots without noise
     :param qc: The pre-created quantum circuit to be run
+    :param answer: The expected answer for the multiplication
+    :param bits: how many bits there will be in the output
+    :param printAll: Whether to print all the counts or just those for the answer
     :return: The results of the simulation
     """
     # Construct an ideal simulator (Use GPU line if Aer is installed with GPU support)
@@ -92,7 +95,8 @@ def runIdeal(qc, answer, bits):
     # Perform an ideal simulation
     result_ideal = aersim.run(qc).result()
     counts_ideal = result_ideal.get_counts(0)
-    print('Counts(ideal):', counts_ideal)
+    if printAll:
+        print('Counts(ideal):', counts_ideal)
     key = bin(answer).lstrip('0b').zfill(bits)
     if key in counts_ideal:
         print(key, ": ", counts_ideal[key])
@@ -102,13 +106,16 @@ def runIdeal(qc, answer, bits):
     return result_ideal
 
 
-def runNoisy(qc, answer, bits):
+def runNoisy(qc, answer, bits, printAll=False):
     """
     Runs the provided circuit with 1024 shots with noise
     :param qc: The pre-created quantum circuit to be run
+    :param answer: The expected answer for the multiplication
+    :param bits: how many bits there will be in the output
+    :param printAll: Whether to print all the counts or just those for the answer
     :return: The results of the simulation
     """
-    #Creating a generic backend for the current number of qubits being simulated
+    # Creating a generic backend for the current number of qubits being simulated
     backend = GenericBackendV2(num_qubits=qc.num_qubits)
 
     # Perform noisy simulation (Use GPU line if Aer is installed with GPU support) (blocking_qubits=??)
@@ -116,8 +123,8 @@ def runNoisy(qc, answer, bits):
     result_noise = backend.run(transpiled_circuit).result()
     # result_noise = backend.run(transpiled_circuit, device="GPU", blocking_enable=True).result()
     counts_noise = result_noise.get_counts(0)
-
-    print('Counts(noise):', counts_noise)
+    if printAll:
+        print('Counts(noise):', counts_noise)
     key = bin(answer).lstrip('0b').zfill(bits)
     if key in counts_noise:
         print(key, ": ", counts_noise[key])
