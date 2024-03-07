@@ -99,11 +99,13 @@ def getDepths():
 def main():
     # getDepths()
     # Test a sample input (3x3)
-    qc = createQFMCircuit("11", "11")
+    sample = "111"
+    value = (int(sample, 2)) ** 2
+    qc = createQFMCircuit(sample, sample)
 
-    qc.draw(output="mpl", style="iqp", filename="test1.png")
-    runIdeal(qc.decompose().decompose().decompose().decompose(), 0b1001, 4)
-    # runNoisy(qc)
+    #  Vqc.draw(output="mpl", style="iqp", filename="test1.png")
+    runIdeal(qc.decompose().decompose().decompose().decompose(), value, len(sample) * 2)
+    runNoisy(qc.decompose().decompose().decompose().decompose(), value, len(sample) * 2)
 
 
 if __name__ == "__main__":

@@ -7,12 +7,12 @@ from sharedFunctions import runNoisy, runIdeal, initializeQReg, CCP
 def addMultRow(qc, reg_a, s, reg_b, reg_p, limit):
     """
     Add a quantum register reg_b if reg_aVal is 1, and store the result in reg_p.
-    :param qc:       quantum circuit that is being operated on
-    :param reg_a:    the smaller of the two inputs, the multiplicand
-    :param s:        the current index of register a
-    :param reg_b:    the larger of the two inputs, the multiplier
-    :param reg_p:    the qregister holding the resultant product
-    :param limit: the minimum size that the phase shift can be
+    :param qc:      quantum circuit that is being operated on.
+    :param reg_a:   the smaller of the two inputs, the multiplicand.
+    :param s:       the current index of register a.
+    :param reg_b:   the larger of the two inputs, the multiplier.
+    :param reg_p:   the qregister holding the resultant product.
+    :param limit:   the minimum size that the phase shift can be
     """
     for b in range(0, len(reg_b)):
         for j in range(0, len(reg_b) - b):
@@ -27,11 +27,11 @@ def addMultRow(qc, reg_a, s, reg_b, reg_p, limit):
 
 def AQFT(qc, reg, limit):
     """
-    Computes the quantum Fourier transform of reg, one qubit at
+    Computes the approximate quantum Fourier transform of reg, one qubit at
     a time.
-    Apply one Hadamard gate to the nth qubit of the quantum register reg, and
-    then apply repeated phase rotations with parameters being pi divided by
-    increasing powers of two.
+    :param qc:      quantum circuit that is being operated on.
+    :param reg:     The quantum register for the AQFT to be applied to.
+    :param limit:   The smallest acceptable phase shift to be performed.
     """
     for i in range(0, len(reg)):
         n = len(reg) - 1 - i
@@ -44,9 +44,9 @@ def AQFT(qc, reg, limit):
 def invAQFT(qc, reg, limit):
     """
     Performs the inverse quantum Fourier transform on a register reg.
-    Apply repeated phase rotations with parameters being pi divided by
-    decreasing powers of two, and then apply a Hadamard gate to the nth qubit
-    of the register reg.
+    :param qc:      quantum circuit that is being operated on
+    :param reg:     The quantum register for the AQFT to be applied to.
+    :param limit:   The smallest acceptable phase shift to be performed.
     """
     for n in range(0, len(reg)):
         for j in range(0, n):
@@ -57,10 +57,10 @@ def invAQFT(qc, reg, limit):
 
 def createAQAMCircuit(multiplier, multiplicand, limit, readable=False):
     """
-    Multiply two numbers using a weighted array structure
-    :param multiplier: A binary string of the multiplier
-    :param multiplicand: A binary string of the multiplicand
-    :param limit: the minimum size that the phase shift can be
+    Multiply two numbers using a structure of the array multiplier, along with a phase limitation.
+    :param multiplier: A binary string of the multiplier ie) "011"
+    :param multiplicand: A binary string of the multiplicand ie) "001"
+    :param limit: The smallest acceptable phase shift to be performed.
     :param readable: Whether to include barriers between stages (will increase circuit depth)
     :return: a QC built using the two input numbers and their binary lengths
     """
@@ -110,8 +110,10 @@ def squareAQAMMultDepth(num, limit):
     """
     qc = createAQAMCircuit(num, num, limit)
     depth = qc.decompose().decompose().decompose().depth()
-    ideal = runIdeal(qc)
-    noisy = runNoisy(qc)
+    answer = (int(num, 2)) ** 2
+    bits = len(num) * 2
+    ideal = runIdeal(qc, answer, bits)
+    noisy = runNoisy(qc, answer, bits)
     del qc
     return depth
 
@@ -126,25 +128,29 @@ def identityAQAMMultDepth(num, limit):
     """
     qc = createAQAMCircuit(num, "1", limit)
     depth = qc.decompose().decompose().decompose().depth()
-    ideal = runIdeal(qc)
-    noisy = runNoisy(qc)
+    answer = (int(num, 2))
+    bits = len(num) + 1
+    ideal = runIdeal(qc, answer, bits)
+    noisy = runNoisy(qc, answer, bits)
     del qc
     return depth
 
 
 def getDepths():
     """
-    Tests a hardcoded sample of input sizes both for identity multiplication and square multiplication. Uses a limit of Log_2(n) for inputs of size n for approximate QFT operations Prints results to the console.
+    Tests a hardcoded sample of input sizes both for identity multiplication and square multiplication.
+    Uses a limit of Log_2(n) for inputs of size n for approximate QFT operations Prints results to the console.
 
-    :return: N/A
+    :return: N/A+
+
     """
-    testArray = {"1": "1", "2": "11"#, "3": "111", "4": "1111", "5": "11111", "6": "111111"
-                 # , "7": "1111111",
-                 # "8": "11111111", "9": "111111111", "10": "1111111111",
-                 # "11": "11111111111", "12": "111111111111"} #, "13": "1111111111111", "14": "11111111111111",
+    testArray = {"1": "1", "2": "11", "3": "111", "4": "1111", "5": "11111", "6": "111111"
+                 , "7": "1111111",
+                 "8": "11111111", "9": "111111111", "10": "1111111111",
+                 "11": "11111111111", "12": "111111111111"}# , "13": "1111111111111", "14": "11111111111111",
                  # "15": "111111111111111", "16": "1111111111111111", "17": "11111111111111111",
                  # "18": "111111111111111111", "19": "1111111111111111111", "20": "11111111111111111111"
-                 }
+                 #}
     print("____________________________________")
     for num in testArray:
         squareLimit = ceil(log2(len(testArray[num])*2) + 2)
@@ -160,14 +166,17 @@ def getDepths():
 
 
 def main():
+    # Get all depths defined in the following function
     getDepths()
-    # Test a sample input (3x3)
-    # sample = "11111"
+
+    # #Test a sample input (3x3)
+    # sample = "111"
+    # value = (int(sample, 2)) ** 2
     # qc = createAQAMCircuit(sample, sample, ceil(log2(len(sample))+2), readable=True)
     # #Draw Circuit
     # #qc.draw(output="mpl", style="iqp")
-    # print(qc.decompose().decompose().decompose().depth())
-    # runNoisy(qc)
+    # runIdeal(qc, value, len(sample)*2)
+    # runNoisy(qc, value, len(sample)*2)
 
 
 if __name__ == "__main__":

@@ -5,12 +5,12 @@ from sharedFunctions import runNoisy, runIdeal, QFT, invQFT, initializeQReg, CCP
 
 def addMultRow(qc, reg_a, s, reg_b, reg_p):
     """
-    Add a quantum register reg_b if reg_aVal is 1, and store the result in reg_p.
-    qc:       quantum circuit that is being operated on
-    reg_a:    the smaller of the two inputs, the multiplicand
-    s:        the current index of register a
-    reg_b:    the larger of the two inputs, the multiplier
-    reg_p:    the qregister holding the resultant product
+    Performs an addition equivalent to the row addition in a classical array multiplier.
+    :param qc:       Quantum circuit that is being operated on.
+    :param reg_a:    The register holding the multiplier.
+    :param s:        The current row index.
+    :param reg_b:    The register holding the multiplicand.
+    :param reg_p:    The register holding the product
     """
     for b in range(0, len(reg_b)):
         for j in range(0, len(reg_b) - b):
@@ -23,11 +23,11 @@ def addMultRow(qc, reg_a, s, reg_b, reg_p):
 
 def createQAMCircuit(multiplier, multiplicand, readable=False):
     """
-    Multiply two numbers using a weighted array structure
-    :param multiplier: A binary string of the multiplier
-    :param multiplicand: A binary string of the multiplicand
-    :param readable: Whether to include barriers between stages (will increase circuit depth)
-    :return: a QC built using the two input numbers and their binary lengths
+    Multiply two numbers using a weighted array structure with a QFT.
+    :param multiplier:  A binary string of the multiplier.
+    :param multiplicand:A binary string of the multiplicand.
+    :param readable:    Whether to include barriers between stages (will increase circuit depth).
+    :return:            A QC built using the two input numbers and their binary lengths.
     """
     # Take two numbers as user input in binary form
     len1 = len(multiplicand)
@@ -114,11 +114,12 @@ def getDepths():
 def main():
     # getDepths()
     # Test a sample input (3x3)
-    qc = createQAMCircuit("11", "11")
-
-    qc.draw(output="mpl", style="iqp", filename="test1.png")
-    # runIdeal(qc)
-    # runNoisy(qc)
+    sample = "111"
+    value = (int(sample, 2)) ** 2
+    qc = createQAMCircuit(sample, sample)
+    #qc.draw(output="mpl", style="iqp", filename="test1.png")
+    runIdeal(qc, value, len(sample) * 2)
+    runNoisy(qc, value, len(sample) * 2)
 
 
 if __name__ == "__main__":

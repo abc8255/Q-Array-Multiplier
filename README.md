@@ -38,6 +38,22 @@ The purpose of this stage is to decrement the multiplier by a constant value of 
 #### Accumulator Inverse QFT
 Similar to the QFT operator, an IQFT operator is used to change the basis of each qubit of the accumulator from the phase domain back to the computational basis, allowing for the result of the multiplier to be measured into the classical bits. This is now only performed at the end of the circuit, once all iterations of addition have been completed.
 
+## Quantum Fourier Multiplier
+This algorithm is one that is part of qiskit and was made based on the paper by Ruiz-Perez et. al. https://arxiv.org/pdf/1411.5949.pdf. It has a limitation that requires both inputs to be the same bit width so the identity tests performed do not work with the identity test utilized by the other papers. Another notable difference is that when performing the phase shifts for the additions, this does not ignore those of 2*pi and greater as in the QAM. This difference is one of the main improvements made in the QAM.
+### Stages
+
+#### Initialization
+In the initialization stage, for our purposes, we are encoding the multiplier and multiplicand values into their respective registers using X gates wherever the input bits are "1".
+
+#### Product QFT
+The QFT operator applied to the product register transforms its representation from the computational basis |k⟩ to the phase basis |j⟩.
+
+#### Weighted Addition Stages
+Applies a weighted addition to every qubit of the product register using multi-controlled phase shifts. This addition is repeated once for every bit in the multiplier.
+
+#### Product Inverse QFT
+The IQFT operator is used to change the basis of each qubit of the product register from the phase domain back to the computational basis, allowing for the result of the multiplier to be measured into the classical bits.
+
 ## Quantum Array Multiplier
 This algorithm also uses the QFT and IQFT to operate in the quantum phase domain, but in this case the additions are not repeated but rather weighted in a similar way to the classical array multiplier structure. The QFT is performed on the product register, and following this, the multiplier and multiplicand are both used as controls in a network of multiple controlled phase shifts. These phase shifts are generated without regard to the state of the multiplier, as in the two repeated addition implementations, which means that no measurements have to be performed __during__ runtime. When multiplying numbers of at least 5 bits in size, the quantum array multiplier has a much more favorable depth than either the repeated addition or the improved repeated addition algorithms.
 ### Stages

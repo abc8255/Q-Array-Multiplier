@@ -11,7 +11,7 @@ def initializeQReg(qc, reg, num):
     :param qc: The quantum circuit being created
     :param reg: The register being initialized
     :param num: The string representation of the binary number
-    :return: N/A
+    :return: None
     """
     for i in range(len(num)):
         if num[i] == '1':
@@ -26,7 +26,7 @@ def CCP(qc, theta, A, B, T):
     :param A: Control 1
     :param B: Control 2
     :param T: Target
-    :return:
+    :return: None
     """
     qc.cp(theta, B, T)
     qc.cx(A, B)
@@ -42,6 +42,9 @@ def QFT(qc, reg):
     Apply one Hadamard gate to the nth qubit of the quantum register reg, and
     then apply repeated phase rotations with parameters being pi divided by
     increasing powers of two.
+    :param qc: The quantum circuit being operated on
+    :param reg: The register being changed to the phase basis
+    :return: None
     """
     for i in range(0, len(reg)):
         n = len(reg) - 1 - i
@@ -57,6 +60,8 @@ def invQFT(qc, reg):
     Apply repeated phase rotations with parameters being pi divided by
     decreasing powers of two, and then apply a Hadamard gate to the nth qubit
     of the register reg.
+    :param qc: The quantum circuit being operated on
+    :param reg: The register being changed out of the phase basis
     """
     for n in range(0, len(reg)):
         for j in range(0, n):
@@ -108,7 +113,7 @@ def runIdeal(qc, answer, bits, printAll=False):
 
 def runNoisy(qc, answer, bits, printAll=False):
     """
-    Runs the provided circuit with 1024 shots with noise
+    Runs the provided circuit with 1024 shots and noise
     :param qc: The pre-created quantum circuit to be run
     :param answer: The expected answer for the multiplication
     :param bits: how many bits there will be in the output

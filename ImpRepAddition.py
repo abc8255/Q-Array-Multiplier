@@ -8,6 +8,11 @@ def add(qc, reg_a, reg_b, factor):
     """
     Add two quantum registers reg_a and reg_b, and store the result in
     reg_a.
+    :param qc: The quantum circuit being operated on.
+    :param reg_a: The first register for the addition, which will contain the sum afterward.
+    :param reg_b: The second register for the addition.
+    :param factor: The current factor to multiply the phase shift by
+    :return: None
     """
     # Add the two numbers by evolving the Fourier transform F(ψ(reg_a))>
     # to |F(ψ(reg_a+reg_b))>
@@ -16,6 +21,12 @@ def add(qc, reg_a, reg_b, factor):
 
 
 def sub1(qc, reg_a):
+    """
+    Subtracts 1 from a given register that is currently in the phase domain.
+    :param qc: The quantum circuit being operated on.
+    :param reg_a: The register to have 1 subtracted from it.
+    :return: None
+    """
     for i in range(0, len(reg_a)):
         n = len(reg_a) - 1 - i
         for j in range(0, n + 1):
@@ -27,9 +38,9 @@ def sub1(qc, reg_a):
 
 def createIOPBCircuit(multiplier, multiplicand):
     """
-    Generates the improved repeated addition circuit
-    :param multiplier: A binary string of the multiplier
-    :param multiplicand: A binary string of the multiplicand
+    Generates the improved repeated addition circuit using the provided multiplier and multiplicand bit strings
+    :param multiplier: A binary string of the multiplier ie) "010"
+    :param multiplicand: A binary string of the multiplicand ie) "110"
     :return: a QC built using the two input numbers and their binary lengths
     """
     len1 = len(multiplicand)
@@ -112,6 +123,7 @@ def getDepths():
     """
     Tests a hardcoded sample of input sizes both for identity multiplication and square multiplication. Prints
     results to the console
+
     :return: N/A
     """
     testArray = {"1": "1", "2": "11", "3": "111", "4": "1111", "5": "11111", "6": "111111", "7": "1111111",
@@ -128,13 +140,17 @@ def getDepths():
 
 
 def main():
+    # Get all depths defined in the following function
     # getDepths()
-    # Test a sample input (3x3)
-    print("b'11' x b'11'")
-    circ = createIOPBCircuit("11", "11")
 
-    runIdeal(circ)
-    runNoisy(circ)
+
+    # Test a sample input (3x3)
+    print("b'111' x b'111'")
+    sample = "111"
+    circ = createIOPBCircuit(sample, sample)
+    value = (int(sample, 2)) ** 2
+    runIdeal(circ, value, len(sample)*2)
+    runNoisy(circ, value, len(sample)*2)
 
 
 if __name__ == "__main__":

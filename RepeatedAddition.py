@@ -112,10 +112,11 @@ def main():
     # getDepths()
     # Test a sample input (3x3)
     print("b'11' x b'11'")
-    circ = createOPBCircuit("11", "11")
-
-    runIdeal(circ)
-    runNoisy(circ)
+    sample = "111"
+    value = (int(sample, 2)) ** 2
+    circ = createOPBCircuit(sample, sample)
+    runIdeal(circ, value, len(sample) * 2)
+    runNoisy(circ, value, len(sample) * 2)
 
 
 if __name__ == "__main__":

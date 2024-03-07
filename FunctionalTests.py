@@ -11,10 +11,12 @@ from math import ceil, log2
 
 def OPBTest(maxNum, timesToTest):
     """
-    TODO
+    Runs both the square and identity OPB circuits up to the max input length, repeating each design a number of times
+    defined when called.
 
     :param maxNum: The highest size input to run the test up to
-    :param timesToTest: The
+    :param timesToTest: The number of times to repeat each generated circuit
+    :return: None
     """
     # Testing Square case
     num = ""
@@ -25,8 +27,10 @@ def OPBTest(maxNum, timesToTest):
         qc = OPB.createOPBCircuit(num, num)
         print("depth :", qc.decompose().decompose().decompose().depth())
         # Commented out Ideal code because all circuits work in an ideal system
+        # print("-------Ideal-------")
         # for i in range(timesToTest):
         #     runIdeal(qc, value, len(num)*2)
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num)*2)
         del qc
@@ -41,8 +45,10 @@ def OPBTest(maxNum, timesToTest):
         qc = OPB.createOPBCircuit(num, "1")
         print("depth :", qc.decompose().decompose().decompose().depth())
         # Commented out Ideal code because all circuits work in an ideal system
+        # print("-------Ideal-------")
         # for i in range(timesToTest):
         #     runIdeal(qc, value, len(num) + 1)
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) + 1)
         del qc
@@ -52,10 +58,12 @@ def OPBTest(maxNum, timesToTest):
 
 def IOPBTest(maxNum, timesToTest):
     """
-    TODO
+    Runs both the square and identity IOPB circuits up to the max input length, repeating each design a number of times
+    defined when called.
 
     :param maxNum: The highest size input to run the test up to
-    :param timesToTest: The
+    :param timesToTest: The number of times to repeat each generated circuit
+    :return: None
     """
     # Testing Square case
     num = ""
@@ -68,8 +76,10 @@ def IOPBTest(maxNum, timesToTest):
         qc = IOPB.createIOPBCircuit(num, num)
         print("depth :", qc.decompose().decompose().decompose().depth())
         # Commented out Ideal code because all circuits work in an ideal system
+        # print("-------Ideal-------")
         # for i in range(timesToTest):
         #     runIdeal(qc, value, len(num) * 2)
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) * 2)
         del qc
@@ -85,8 +95,10 @@ def IOPBTest(maxNum, timesToTest):
         qc = IOPB.createIOPBCircuit(num, "1")
         print("depth :", qc.decompose().decompose().decompose().depth())
         # Commented out Ideal code because all circuits work in an ideal system
+        # print("-------Ideal-------")
         # for i in range(timesToTest):
         #     runIdeal(qc, value, len(num) + 1)
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) + 1)
         del qc
@@ -96,10 +108,12 @@ def IOPBTest(maxNum, timesToTest):
 
 def QFMTest(maxNum, timesToTest):
     """
-    TODO
+    Runs both the square and identity QFM circuits up to the max input length, repeating each design a number of times
+    defined when called.
 
     :param maxNum: The highest size input to run the test up to
-    :param timesToTest: The
+    :param timesToTest: The number of times to repeat each generated circuit
+    :return: None
     """
     # Testing Square case
     num = ""
@@ -113,7 +127,7 @@ def QFMTest(maxNum, timesToTest):
         # print("-------Ideal-------")
         # for i in range(timesToTest):
         #     runIdeal(qc.decompose().decompose().decompose().decompose(), value, len(num)*2)
-        # print("-------Noisy-------")
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc.decompose().decompose().decompose().decompose(), value, len(num)*2)
         del qc
@@ -123,10 +137,12 @@ def QFMTest(maxNum, timesToTest):
 
 def QAMTest(maxNum, timesToTest):
     """
-    TODO
+    Runs both the square and identity QAM circuits up to the max input length, repeating each design a number of times
+    defined when called.
 
     :param maxNum: The highest size input to run the test up to
-    :param timesToTest: The
+    :param timesToTest: The number of times to repeat each generated circuit
+    :return: None
     """
     # Testing Square case
     num = ""
@@ -137,8 +153,10 @@ def QAMTest(maxNum, timesToTest):
         qc = QAM.createQAMCircuit(num, num)
         print("depth :", qc.decompose().decompose().decompose().depth())
         # Commented out Ideal code because all circuits work in an ideal system
+        # print("-------Ideal-------")
         # for i in range(timesToTest):
         #     runIdeal(qc, value, len(num) * 2)
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) * 2)
         del qc
@@ -153,8 +171,10 @@ def QAMTest(maxNum, timesToTest):
         qc = QAM.createQAMCircuit(num, "1")
         print("depth :", qc.decompose().decompose().decompose().depth())
         # Commented out Ideal code because all circuits work in an ideal system
+        # print("-------Ideal-------")
         # for i in range(timesToTest):
         #     runIdeal(qc, value, len(num) + 1)
+        print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) + 1)
         del qc
@@ -164,10 +184,12 @@ def QAMTest(maxNum, timesToTest):
 
 def AQAMTest(maxNum, timesToTest):
     """
-    TODO
+    Runs both the square and identity AQAM circuits up to the max input length, repeating each design a number of times
+    defined when called.
 
     :param maxNum: The highest size input to run the test up to
-    :param timesToTest: The
+    :param timesToTest: The number of times to repeat each generated circuit
+    :return: None
     """
     # Testing Square case
     num = ""
@@ -210,10 +232,10 @@ def AQAMTest(maxNum, timesToTest):
 
 
 def main():
-    numToTest = 8                  # max number of bits to run the simulation to
-    timesToTest = 20                 # number of times to repeat each test
-    # OPBTest(numToTest, timesToTest)
-    # IOPBTest(numToTest, timesToTest)
+    numToTest = 8                       # max number of bits to run the simulation to
+    timesToTest = 20                    # number of times to repeat each test
+    OPBTest(numToTest, timesToTest)
+    IOPBTest(numToTest, timesToTest)
     QFMTest(numToTest, timesToTest)
     QAMTest(numToTest, timesToTest)
     AQAMTest(numToTest, timesToTest)
