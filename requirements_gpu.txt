@@ -1,0 +1,4 @@
+qiskit~=1.0.1
+qiskit-aer-gpu~=0.13.3
+numpy~=1.26.3
+pylatexenc~=3.0a21
