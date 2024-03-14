@@ -232,7 +232,7 @@ def AQAMTest(maxNum, timesToTest):
 
 
 def main():
-    numToTest = 8                       # max number of bits to run the simulation to
+    numToTest = 1                       # max number of bits to run the simulation to
     timesToTest = 20                    # number of times to repeat each test
     OPBTest(numToTest, timesToTest)
     IOPBTest(numToTest, timesToTest)

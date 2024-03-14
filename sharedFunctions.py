@@ -1,5 +1,5 @@
 from qiskit_aer import AerSimulator
-from qiskit.providers.fake_provider import GenericBackendV2
+from qiskit.providers.fake_provider import ConfigurableFakeBackend
 from qiskit import transpile
 from math import pi
 
@@ -121,7 +121,7 @@ def runNoisy(qc, answer, bits, printAll=False):
     :return: The results of the simulation
     """
     # Creating a generic backend for the current number of qubits being simulated
-    backend = GenericBackendV2(num_qubits=qc.num_qubits)
+    backend = ConfigurableFakeBackend("testy", n_qubits=qc.num_qubits, version=1.0)
 
     # Perform noisy simulation (Use GPU line if Aer is installed with GPU support) (blocking_qubits=??)
     transpiled_circuit = transpile(qc, backend)
