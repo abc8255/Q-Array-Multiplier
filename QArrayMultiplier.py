@@ -1,6 +1,6 @@
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 import numpy as np
-from sharedFunctions import runNoisy, runIdeal, QFT, invQFT, initializeQReg, CCP
+from sharedFunctions import runNoisy, runLessNoisy, runIdeal, QFT, invQFT, initializeQReg, CCP
 
 
 def addMultRow(qc, reg_a, s, reg_b, reg_p):
@@ -73,8 +73,10 @@ def squareQAMMultDepth(num):
     :return: The depth of the generated circuit
     """
     qc = createQAMCircuit(num, num)
+    depth = qc.decompose().decompose().decompose().depth()
 
-    return qc.decompose().decompose().decompose().depth()
+    del qc
+    return depth
 
 
 def identityQAMMultDepth(num):
@@ -85,8 +87,10 @@ def identityQAMMultDepth(num):
     :return: The depth of the generated circuit
     """
     qc = createQAMCircuit(num, "1")
+    depth = qc.decompose().decompose().decompose().depth()
 
-    return qc.decompose().decompose().decompose().depth()
+    del qc
+    return depth
 
 
 def getDepths():
@@ -114,12 +118,15 @@ def getDepths():
 def main():
     # getDepths()
     # Test a sample input (3x3)
-    sample = "111"
+    sample = "1111"
+    print("b'", sample, "' x b'", sample, "'")
     value = (int(sample, 2)) ** 2
     qc = createQAMCircuit(sample, sample)
     #qc.draw(output="mpl", style="iqp", filename="test1.png")
+    print("---Ideal, Noisy, Less Noisy---")
     runIdeal(qc, value, len(sample) * 2)
     runNoisy(qc, value, len(sample) * 2)
+    runLessNoisy(qc, value, len(sample) * 2)
 
 
 if __name__ == "__main__":

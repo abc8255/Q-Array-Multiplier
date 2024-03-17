@@ -1,7 +1,7 @@
 import qiskit.circuit.library
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 import numpy as np
-from sharedFunctions import runNoisy, runIdeal, QFT, invQFT, initializeQReg, CCP
+from sharedFunctions import runNoisy, runLessNoisy, runIdeal, QFT, invQFT, initializeQReg, CCP
 
 def createQFMCircuit(multiplier, multiplicand, readable=False):
     """
@@ -104,8 +104,10 @@ def main():
     qc = createQFMCircuit(sample, sample)
 
     #  Vqc.draw(output="mpl", style="iqp", filename="test1.png")
+    print("---Ideal, Noisy, Less Noisy---")
     runIdeal(qc.decompose().decompose().decompose().decompose(), value, len(sample) * 2)
     runNoisy(qc.decompose().decompose().decompose().decompose(), value, len(sample) * 2)
+    runLessNoisy(qc.decompose().decompose().decompose().decompose(), value, len(sample) * 2)
 
 
 if __name__ == "__main__":

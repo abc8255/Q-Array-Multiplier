@@ -5,7 +5,7 @@ import ImpRepAddition as IOPB
 import QArrayMultiplier as QAM
 import RepeatedAddition as OPB
 import QFourierMultiplier as QFM
-from sharedFunctions import runIdeal, runNoisy
+from sharedFunctions import runIdeal, runNoisy, runLessNoisy
 from math import ceil, log2
 
 
@@ -26,13 +26,16 @@ def OPBTest(maxNum, timesToTest):
         print("Creating a square OPB Circuit of size ", num)
         qc = OPB.createOPBCircuit(num, num)
         print("depth :", qc.decompose().decompose().decompose().depth())
-        # Commented out Ideal code because all circuits work in an ideal system
+        # Commented out Ideal code to reduce time because all circuits work in an ideal system
         # print("-------Ideal-------")
         # for i in range(timesToTest):
         #     runIdeal(qc, value, len(num)*2)
         print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num)*2)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) * 2)
         del qc
         print("---------", i+1)
     num = ""
@@ -51,6 +54,9 @@ def OPBTest(maxNum, timesToTest):
         print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) + 1)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) + 1)
         del qc
         print("---------", i+1)
     print("______________END_OF_OPB_______________", num)
@@ -82,6 +88,9 @@ def IOPBTest(maxNum, timesToTest):
         print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) * 2)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) * 2)
         del qc
         print("---------", i+1)
     num = ""
@@ -101,6 +110,9 @@ def IOPBTest(maxNum, timesToTest):
         print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) + 1)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) + 1)
         del qc
         print("---------", i+1)
     print("______________END_OF_IOPB_______________", num)
@@ -129,7 +141,10 @@ def QFMTest(maxNum, timesToTest):
         #     runIdeal(qc.decompose().decompose().decompose().decompose(), value, len(num)*2)
         print("-------Noisy-------")
         for i in range(timesToTest):
-            runNoisy(qc.decompose().decompose().decompose().decompose(), value, len(num)*2)
+            runNoisy(qc.decompose().decompose().decompose().decompose(), value, len(num) * 2)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) * 2)
         del qc
         print("---------", i+1)
     print("______________END_OF_QFM_______________")
@@ -159,6 +174,9 @@ def QAMTest(maxNum, timesToTest):
         print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) * 2)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) * 2)
         del qc
         print("---------", i+1)
     num = ""
@@ -177,6 +195,9 @@ def QAMTest(maxNum, timesToTest):
         print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) + 1)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) + 1)
         del qc
         print("---------", i+1)
     print("______________END_OF_QAM_______________")
@@ -207,6 +228,9 @@ def AQAMTest(maxNum, timesToTest):
         print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num) * 2)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) * 2)
         del qc
         print("---------", i)
     num = ""
@@ -226,14 +250,17 @@ def AQAMTest(maxNum, timesToTest):
         print("-------Noisy-------")
         for i in range(timesToTest):
             runNoisy(qc, value, len(num)+1)
+        print("-------Less Noisy-------")
+        for i in range(timesToTest):
+            runLessNoisy(qc, value, len(num) + 1)
         del qc
         print("---------", i)
     print("______________END_OF_AQAM_______________")
 
 
 def main():
-    numToTest = 8                       # max number of bits to run the simulation to
-    timesToTest = 20                    # number of times to repeat each test
+    numToTest = 5                       # max number of bits to run the simulation to
+    timesToTest = 19                    # number of times to repeat each test
     OPBTest(numToTest, timesToTest)
     IOPBTest(numToTest, timesToTest)
     QFMTest(numToTest, timesToTest)
