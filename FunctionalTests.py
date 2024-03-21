@@ -231,14 +231,88 @@ def AQAMTest(maxNum, timesToTest):
     print("______________END_OF_AQAM_______________")
 
 
+def ScalingAllTests(inputSize):
+    """
+    Runs all algorithms, up to a given input size getting the depth for each.
+
+    :param inputSize: The size input to run the test up to
+    :return: None
+    """
+    # Generate inputs to test all the possible values
+    testInputs = []
+    bigInput = "1" * inputSize
+    for i in range(inputSize):
+        currNum = "1" * (i+1)
+        testInputs.append(currNum)
+    print("All 8 bit inputs with values changed ie) '00000001', '00000011'...")
+    for sample in testInputs:
+        sample = sample.zfill(inputSize)
+        print("input size of: ", sample, " operation: ", len(sample), " x ", len(bigInput))
+        # OPB
+        qc = OPB.createOPBCircuit(sample, bigInput)
+        print(" OPB depth:", qc.decompose().decompose().decompose().depth())
+        del qc
+
+        # IOPB
+        qc = IOPB.createIOPBCircuit(sample, bigInput)
+        print("IOPB depth:", qc.decompose().decompose().decompose().depth())
+        del qc
+
+        # QFM
+        qc = QFM.createQFMCircuit(bigInput, sample)
+        print(" QFM depth:", qc.decompose().decompose().decompose().decompose().decompose().depth())
+        del qc
+
+        # QAM
+        qc = QAM.createQAMCircuit(sample, bigInput)
+        print(" QAM depth:", qc.decompose().decompose().decompose().depth())
+        del qc
+
+        # AQAM
+        limit = ceil(log2(len(sample) + len(bigInput)) + 2)
+        qc = AQAM.createAQAMCircuit(sample, bigInput, limit)
+        print("AQAM depth:", qc.decompose().decompose().decompose().depth())
+        del qc
+
+    print("The size of the second input changes ie) '1', '11', '111'...")
+    for sample in testInputs:
+        print("input size of: ", len(sample), " x ", len(bigInput))
+        # OPB
+        qc = OPB.createOPBCircuit(sample, bigInput)
+        print(" OPB depth:", qc.decompose().decompose().decompose().depth())
+        del qc
+
+        # IOPB
+        qc = IOPB.createIOPBCircuit(sample, bigInput)
+        print("IOPB depth:", qc.decompose().decompose().decompose().depth())
+        del qc
+
+        # QFM
+        # qc = QFM.createQFMCircuit(sample, bigInput)
+        # print(" QFM depth:", qc.decompose().decompose().decompose().depth())
+        # del qc
+
+        # QAM
+        qc = QAM.createQAMCircuit(sample, bigInput)
+        print(" QAM depth:", qc.decompose().decompose().decompose().depth())
+        del qc
+
+        # AQAM
+        limit = ceil(log2(len(sample)+len(bigInput)) + 2)
+        qc = AQAM.createAQAMCircuit(sample, bigInput, limit)
+        print("AQAM depth:", qc.decompose().decompose().decompose().depth())
+        del qc
+
+
 def main():
     numToTest = 8                       # max number of bits to run the simulation to
     timesToTest = 20                    # number of times to repeat each test
-    OPBTest(numToTest, timesToTest)
-    IOPBTest(numToTest, timesToTest)
-    QFMTest(numToTest, timesToTest)
-    QAMTest(numToTest, timesToTest)
-    AQAMTest(numToTest, timesToTest)
+    ScalingAllTests(8)
+    # OPBTest(numToTest, timesToTest)
+    # IOPBTest(numToTest, timesToTest)
+    # QFMTest(numToTest, timesToTest)
+    # QAMTest(numToTest, timesToTest)
+    # AQAMTest(numToTest, timesToTest)
 
 
 if __name__ == "__main__":
