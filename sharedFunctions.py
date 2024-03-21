@@ -1,4 +1,6 @@
 from qiskit_aer import AerSimulator
+import qiskit_aer.noise as noise
+from qiskit_aer.noise import NoiseModel
 from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit import transpile
 from math import pi
@@ -96,7 +98,7 @@ def runIdeal(qc, answer, bits, printAll=False):
     """
     # Construct an ideal simulator (Use GPU line if Aer is installed with GPU support)
     aersim = AerSimulator()
-    #aersim = AerSimulator(device="GPU")
+    # aersim = AerSimulator(device="GPU")
     # Perform an ideal simulation
     result_ideal = aersim.run(qc).result()
     counts_ideal = result_ideal.get_counts(0)
@@ -122,11 +124,12 @@ def runNoisy(qc, answer, bits, printAll=False):
     """
     # Creating a generic backend for the current number of qubits being simulated
     backend = GenericBackendV2(num_qubits=qc.num_qubits)
+    transpiled_circuit = transpile(qc, backend)
 
     # Perform noisy simulation (Use GPU line if Aer is installed with GPU support) (blocking_qubits=??)
-    transpiled_circuit = transpile(qc, backend)
     result_noise = backend.run(transpiled_circuit).result()
     # result_noise = backend.run(transpiled_circuit, device="GPU", blocking_enable=True).result()
+
     counts_noise = result_noise.get_counts(0)
     if printAll:
         print('Counts(noise):', counts_noise)
@@ -136,3 +139,44 @@ def runNoisy(qc, answer, bits, printAll=False):
     else:
         print("key, ", key, ", not present in results")
     return result_noise
+
+
+def runLessNoisy(qc, answer, bits, printAll=False):
+    """
+    Runs the provided circuit with 1024 shots and less noise than the previous noise run
+    :param qc: The pre-created quantum circuit to be run
+    :param answer: The expected answer for the multiplication
+    :param bits: how many bits there will be in the output
+    :param printAll: Whether to print all the counts or just those for the answer
+    :return: The results of the simulation
+    """
+    # Creating a generic backend for the current number of qubits being simulated
+    backend = GenericBackendV2(num_qubits=qc.num_qubits)
+
+    # Build a noise model that only includes gate noise ie) no decoherence or readout noise
+    noise_model = NoiseModel()
+    prob_1 = 0.00001
+    prob_2 = 0.0001
+
+    error_1 = noise.depolarizing_error(prob_1, 1)
+    error_2 = noise.depolarizing_error(prob_2, 2)
+    noise_model.add_all_qubit_quantum_error(error_1, ['rz', 'sx', 'x'])
+    noise_model.add_all_qubit_quantum_error(error_2, ['cx'])
+
+    sim = AerSimulator(noise_model=noise_model)
+
+    # Perform noisy simulation (Use GPU line if Aer is installed with GPU support) (blocking_qubits=??)
+    transpiled_circuit = transpile(qc, backend)
+    result = sim.run(transpiled_circuit).result()
+    # result = sim.run(transpiled_circuit, device="GPU", blocking_enable=True).result()
+    counts_noise = result.get_counts(0)
+
+    if printAll:
+        print('Counts(noise):', counts_noise)
+    key = bin(answer).lstrip('0b').zfill(bits)
+    if key in counts_noise:
+        print(key, ": ", counts_noise[key])
+    else:
+        print("key, ", key, ", not present in results")
+    # return result_noise
+    return result

@@ -1,7 +1,7 @@
 from qiskit import QuantumRegister, QuantumCircuit, ClassicalRegister
 from math import pi
 
-from sharedFunctions import QFT, invQFT, runIdeal, runNoisy, evolveQFTState
+from sharedFunctions import QFT, invQFT, runIdeal, runNoisy, runLessNoisy, evolveQFTState
 
 
 def add(qc, reg_a, reg_b, factor):
@@ -145,12 +145,14 @@ def main():
 
 
     # Test a sample input (3x3)
-    print("b'111' x b'111'")
-    sample = "111"
-    circ = createIOPBCircuit(sample, sample)
+    sample = "1111"
+    print("b'", sample, "' x b'", sample, "'")
+    qc = createIOPBCircuit(sample, sample)
     value = (int(sample, 2)) ** 2
-    runIdeal(circ, value, len(sample)*2)
-    runNoisy(circ, value, len(sample)*2)
+    print("---Ideal, Noisy, Less Noisy---")
+    runIdeal(qc, value, len(sample) * 2)
+    runNoisy(qc, value, len(sample) * 2)
+    runLessNoisy(qc, value, len(sample) * 2)
 
 
 if __name__ == "__main__":

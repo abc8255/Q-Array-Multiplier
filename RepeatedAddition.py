@@ -1,5 +1,5 @@
 from qiskit import QuantumRegister, QuantumCircuit, ClassicalRegister
-from sharedFunctions import QFT, invQFT, runNoisy, runIdeal, initializeQReg, evolveQFTState
+from sharedFunctions import QFT, invQFT, runNoisy, runLessNoisy, runIdeal, initializeQReg, evolveQFTState
 
 
 def add(reg_a, reg_b, circ, factor):
@@ -111,12 +111,16 @@ def getDepths():
 def main():
     # getDepths()
     # Test a sample input (3x3)
-    print("b'11' x b'11'")
-    sample = "111"
+
+    sample = "1111"
+    print("b'", sample, "' x b'", sample, "'")
+
     value = (int(sample, 2)) ** 2
-    circ = createOPBCircuit(sample, sample)
-    runIdeal(circ, value, len(sample) * 2)
-    runNoisy(circ, value, len(sample) * 2)
+    qc = createOPBCircuit(sample, sample)
+    print("---Ideal, Noisy, Less Noisy---")
+    runIdeal(qc, value, len(sample) * 2)
+    runNoisy(qc, value, len(sample) * 2)
+    runLessNoisy(qc, value, len(sample) * 2)
 
 
 if __name__ == "__main__":
