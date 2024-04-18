@@ -1,7 +1,7 @@
 from qiskit import QuantumRegister, QuantumCircuit, ClassicalRegister
 import numpy as np
 from math import pi, log2, ceil
-from sharedFunctions import runNoisy, runLessNoisy, runIdeal, initializeQReg, CCP
+from sharedFunctions import runNoisy, runLessNoisy, runIdeal, initializeQReg, CCP, AQFT, invAQFT
 
 
 def addMultRow(qc, reg_a, s, reg_b, reg_p, limit):
@@ -23,36 +23,6 @@ def addMultRow(qc, reg_a, s, reg_b, reg_p, limit):
             lam = np.pi / (2 ** (b + 2 + i))
             if abs((b + 2 + i)) <= limit:
                 CCP(qc, lam, reg_a[s], reg_b[len(reg_b) - b - 1], reg_p[len(reg_b) + i + s])
-
-
-def AQFT(qc, reg, limit):
-    """
-    Computes the approximate quantum Fourier transform of reg, one qubit at
-    a time.
-    :param qc:      quantum circuit that is being operated on.
-    :param reg:     The quantum register for the AQFT to be applied to.
-    :param limit:   The smallest acceptable phase shift to be performed.
-    """
-    for i in range(0, len(reg)):
-        n = len(reg) - 1 - i
-        qc.h(reg[n])
-        for j in range(0, n):
-            if abs((j + 1)) <= limit:
-                qc.cp(pi / float(2 ** (j + 1)), reg[n - (j + 1)], reg[n])
-
-
-def invAQFT(qc, reg, limit):
-    """
-    Performs the inverse quantum Fourier transform on a register reg.
-    :param qc:      quantum circuit that is being operated on
-    :param reg:     The quantum register for the AQFT to be applied to.
-    :param limit:   The smallest acceptable phase shift to be performed.
-    """
-    for n in range(0, len(reg)):
-        for j in range(0, n):
-            if abs((n - j)) <= limit:
-                qc.cp(-1 * pi / float(2 ** (n - j)), reg[j], reg[n])
-        qc.h(reg[n])
 
 
 def createAQAMCircuit(multiplier, multiplicand, limit, readable=False):
@@ -140,8 +110,8 @@ def getDepths():
     testArray = {"1": "1", "2": "11", "3": "111", "4": "1111", "5": "11111", "6": "111111"
                  , "7": "1111111",
                  "8": "11111111", "9": "111111111", "10": "1111111111",
-                 "11": "11111111111", "12": "111111111111"}# , "13": "1111111111111", "14": "11111111111111",
-                 # "15": "111111111111111", "16": "1111111111111111", "17": "11111111111111111",
+                 "11": "11111111111", "12": "111111111111", "13": "1111111111111", "14": "11111111111111",
+                 "15": "111111111111111", "16": "1111111111111111"}#, "17": "11111111111111111",
                  # "18": "111111111111111111", "19": "1111111111111111111", "20": "11111111111111111111"
                  #}
     print("____________________________________")
@@ -149,30 +119,30 @@ def getDepths():
         squareLimit = ceil(log2(len(testArray[num])*2) + 2)
         identityLimit = ceil(log2(len(testArray[num]) + 1) + 2)
         print("Depth for an input of size {}".format(num))
-        print("Limit for this input size {}".format(squareLimit))
-        depth = identityAQAMMultDepth(testArray[num], squareLimit)
+        # print("Limit for this input size {}".format(squareLimit))
+        depth = identityAQAMMultDepth(testArray[num], identityLimit)
         print("identity depth: {}".format(depth))
         print("_____________")
-        depth = squareAQAMMultDepth(testArray[num], identityLimit)
+        depth = squareAQAMMultDepth(testArray[num], squareLimit)
         print("square depth: {}".format(depth))
         print("____________________________________")
 
 
 def main():
     # Get all depths defined in the following function
-    # getDepths()
+    getDepths()
 
     # #Test a sample input (3x3)
-    sample = "1111"
-    print("b'", sample, "' x b'", sample, "'")
-    value = (int(sample, 2)) ** 2
-    qc = createAQAMCircuit(sample, sample, ceil(log2(len(sample)*2)+2))
-    #Draw Circuit
-    #qc.draw(output="mpl", style="iqp")
-    print("---Ideal, Noisy, Less Noisy---")
-    runIdeal(qc, value, len(sample)*2)
-    runNoisy(qc, value, len(sample)*2)
-    runLessNoisy(qc, value, len(sample)*2)
+    # sample = "1111"
+    # print("b'", sample, "' x b'", sample, "'")
+    # value = (int(sample, 2)) ** 2
+    # qc = createAQAMCircuit(sample, sample, ceil(log2(len(sample)*2)+2))
+    # #Draw Circuit
+    # #qc.draw(output="mpl", style="iqp")
+    # print("---Ideal, Noisy, Less Noisy---")
+    # runIdeal(qc, value, len(sample)*2)
+    # runNoisy(qc, value, len(sample)*2)
+    # runLessNoisy(qc, value, len(sample)*2)
 
 
 if __name__ == "__main__":

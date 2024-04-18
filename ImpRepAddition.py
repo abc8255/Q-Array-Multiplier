@@ -36,7 +36,7 @@ def sub1(qc, reg_a):
                 qc.p(-1 * pi / float(2 ** j), reg_a[n])
 
 
-def createIOPBCircuit(multiplier, multiplicand):
+def createIOPBCircuit(multiplier, multiplicand, readable=False):
     """
     Generates the improved repeated addition circuit using the provided multiplier and multiplicand bit strings
     :param multiplier: A binary string of the multiplier ie) "010"
@@ -66,14 +66,21 @@ def createIOPBCircuit(multiplier, multiplicand):
         if multiplier[i] == '1':
             qc.x(qrMultiplier[len2 - i - 1])
 
+    if readable: qc.barrier(label="Initialized + Start QFT")
+
     QFT(qc, accumulator)
+
+    if readable: qc.barrier(label=("End QFT"))
 
     multiplier_str = int(multiplier, 2)
     # Perform repeated addition until the multiplier
     # is zero
     while multiplier_str != 0:
+        if readable: qc.barrier(label="Add")
 
         add(qc, accumulator, qrMultiplicand, 1)
+
+        if readable: qc.barrier(label="begin decrement")
 
         # Compute the Fourier transform of multiplier
         QFT(qc, qrMultiplier)
@@ -86,12 +93,20 @@ def createIOPBCircuit(multiplier, multiplicand):
         # measure current multiplier state
         for i in range(len(qrMultiplier)):
             qc.measure(qrMultiplier[i], cl[i])
+        if readable: qc.barrier(label="End Decrement")
+
         multiplier_str += -1
 
     # Compute the inverse Fourier transform of accumulator
+    if readable: qc.barrier(label="Begin IAQFT")
+
     invQFT(qc, accumulator)
 
+    if readable: qc.barrier(label="End IAQFT")
+
     qc.measure(accumulator, cl)
+
+    # add(qc, accumulator, qrMultiplicand, 1)
     return qc
 
 
@@ -102,7 +117,7 @@ def squareMultDepth(num):
     :param num: The number being used as both the multiplier and multiplicand
     :return: The depth of the generated circuit
     """
-    qc = createIOPBCircuit(num, num)
+    qc = createIOPBCircuit(num, num, readable=True)
 
     return qc.decompose().decompose().decompose().depth()
 
@@ -114,7 +129,7 @@ def identityMultDepth(num):
     :param num: The number being used as the multiplicand
     :return: The depth of the generated circuit
     """
-    qc = createIOPBCircuit(num, "1")
+    qc = createIOPBCircuit(num, "1", readable=True)
 
     return qc.decompose().decompose().decompose().depth()
 
@@ -127,32 +142,42 @@ def getDepths():
     :return: N/A
     """
     testArray = {"1": "1", "2": "11", "3": "111", "4": "1111", "5": "11111", "6": "111111", "7": "1111111",
-                 "8": "11111111", "9": "111111111", "10": "1111111111",
-                 "11": "11111111111", "12": "111111111111"}
+                 "8": "11111111", "9": "111111111", "10": "1111111111"
+                 }
 
+    print("____________________________________")
     for num in testArray:
-        print("Depth for a identity input of size {}".format(num))
+        print("Depth for an input of size {}".format(num))
         depth = identityMultDepth(testArray[num])
-        print("{}".format(depth))
-        print("Depth for a square input of size {}".format(num))
+        print("identity depth: {}".format(depth))
+        print("_____________")
         depth = squareMultDepth(testArray[num])
-        print("{}".format(depth))
+        print("square depth: {}".format(depth))
+        print("____________________________________")
 
 
 def main():
     # Get all depths defined in the following function
     # getDepths()
+    #
+    #
+    # # Test a sample input (3x3)
+    # sample = "1111"
+    # print("b'", sample, "' x b'", sample, "'")
+    # qc = createIOPBCircuit(sample, sample)
+    # value = (int(sample, 2)) ** 2
+    # print("---Ideal, Noisy, Less Noisy---")
+    # runIdeal(qc, value, len(sample) * 2)
+    # runNoisy(qc, value, len(sample) * 2)
+    # runLessNoisy(qc, value, len(sample) * 2)
 
-
-    # Test a sample input (3x3)
-    sample = "1111"
+    sample = "1111111"
     print("b'", sample, "' x b'", sample, "'")
-    qc = createIOPBCircuit(sample, sample)
+    # print("b'", sample, "' x b'", "1", "'")
     value = (int(sample, 2)) ** 2
-    print("---Ideal, Noisy, Less Noisy---")
-    runIdeal(qc, value, len(sample) * 2)
-    runNoisy(qc, value, len(sample) * 2)
-    runLessNoisy(qc, value, len(sample) * 2)
+    # value = int(sample, 2)
+    qc = createIOPBCircuit(sample, "1", readable=True)
+    qc.draw(output="mpl", style="iqp", filename="tester.png", scale=1, fold=200)
 
 
 if __name__ == "__main__":

@@ -86,6 +86,54 @@ def evolveQFTState(qc, reg_a, reg_b, n, factor):
             qc.cp(factor * pi / float(2 ** i), reg_b[n - i], reg_a[n])
 
 
+def AQFT(qc, reg, limit):
+    """
+    Computes the approximate quantum Fourier transform of reg, one qubit at
+    a time.
+    :param qc:      quantum circuit that is being operated on.
+    :param reg:     The quantum register for the AQFT to be applied to.
+    :param limit:   The smallest acceptable phase shift to be performed.
+    """
+    for i in range(0, len(reg)):
+        n = len(reg) - 1 - i
+        qc.h(reg[n])
+        for j in range(0, n):
+            if abs((j + 1)) <= limit:
+                qc.cp(pi / float(2 ** (j + 1)), reg[n - (j + 1)], reg[n])
+
+
+def invAQFT(qc, reg, limit):
+    """
+    Performs the inverse quantum Fourier transform on a register reg.
+    :param qc:      quantum circuit that is being operated on
+    :param reg:     The quantum register for the AQFT to be applied to.
+    :param limit:   The smallest acceptable phase shift to be performed.
+    """
+    for n in range(0, len(reg)):
+        for j in range(0, n):
+            if abs((n - j)) <= limit:
+                qc.cp(-1 * pi / float(2 ** (n - j)), reg[j], reg[n])
+        qc.h(reg[n])
+
+
+def evolveAQFTState(qc, reg_a, reg_b, n, factor, limit):
+    """
+    Evolves the state |F(ψ(reg_a))> to |F(ψ(reg_a+reg_b))> using the quantum
+    Fourier transform conditioned on the qubits of the reg_b.
+    Apply repeated phase rotations with parameters being pi divided by
+    increasing powers of two.
+    """
+    len_b = len(reg_b)
+    for i in range(0, n + 1):
+        if (n - i) > len_b - 1:
+            pass
+        else:
+            if abs((2**i)/factor) <= 2**limit:
+                qc.cp(factor * pi / float(2 ** i), reg_b[n - i], reg_a[n])
+            # else:
+            #     # print("phase rot removed")
+
+
 # ----------------------Simulator Code---------------------------
 def runIdeal(qc, answer, bits, printAll=False):
     """
